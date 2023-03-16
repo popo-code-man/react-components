@@ -1,12 +1,21 @@
 .mouse_bubble_wrapper {
   width: max-content;
-
-
 }
 
 .bubble_wrapper {
   position: fixed;
   top: -10000px;
   left: -1000px;
-
+  width: max-content;
+  min-width: 100px;
+  .bubble_content {
+    background-color: #fff;
+    background-clip: padding-box;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px 0 rgb(0 0 0 / 8%),
+      0 3px 6px -4px rgb(0 0 0 / 12%),
+      0 9px 28px 8px rgb(0 0 0 / 5%);
+    padding: 12px;
+    width: max-content;
+  }
 }

@@ -1,78 +1,82 @@
-import React, { memo, useRef, useState, useEffect, useCallback } from "react";
+import React, { memo, useState, useRef } from "react";
 import "./index.scss";
-import _ from "lodash";
 
-interface IProps {
-	content: React.ReactNode;
-	children: React.ReactNode;
+interface IMouseBubble {
+	content: string | React.ReactNode;
+	children: string | React.ReactNode;
 }
 
-function getOffset(el: any) {
-	var _x = 0;
-	var _y = 0;
-	while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-		_x += el.offsetLeft - el.scrollLeft;
-		_y += el.offsetTop - el.scrollTop;
-		el = el.offsetParent;
-	}
-	return { top: _y, left: _x };
-}
+const index = memo((props: IMouseBubble) => {
+	const { children, content } = props;
+	const [visible, setVisible] = useState(false);
+	const [position, setPosition] = useState({
+		top: 0,
+		left: 0,
+	});
+	const wrapperRef = useRef<any>(null);
+	const bubbleRef = useRef<any>(null);
+	const getOffset = (e: any) => {
+		const event = e || window.event;
+		const { x, y, width, height } = wrapperRef.current.getBoundingClientRect();
+		const bubbleObj = bubbleRef.current.getBoundingClientRect();
 
-const Index = memo((props: IProps) => {
-	const { content, children } = props;
+		let _x = event.clientX;
+		let _y = event.clientY;
+		const winW = window.innerWidth;
+		console.log(_x);
 
-	const [show, setShow] = useState(false);
-	const bubbleRef = useRef(null);
-	const wrapperRef = useRef(null);
+		if (_x > x + width || _x < x || _y > y + height || _y < y) {
+			setVisible(false);
+		}
+		let bubbleX = _x - 30;
+		let bubbleY = _y - bubbleObj.height - 18;
+		if (bubbleX < 0) {
+			bubbleX = 0;
+		}
+		if (bubbleX + bubbleObj.width > winW) {
+			bubbleX = _x - bubbleObj.width + 30;
+		}
+		if (bubbleY < 0) {
+			bubbleY = _y + 30;
+		}
+		return { x: bubbleX, y: bubbleY };
+	};
+	const handleMouseMove = (e: any) => {
+		setVisible(true);
 
-	const handleMouseLeave = _.debounce(() => {
-		console.log("handleMouseLeave");
-		setShow(false);
-		document.removeEventListener("mousemove", documentMouseMove);
-	}, 100);
+		const { x, y } = getOffset(e);
 
-	const handleMouseEnter = () => {
-		console.log("handleMouseEnter");
-		setShow(true);
-		document.addEventListener("mousemove", documentMouseMove);
+		setPosition({ left: x, top: y });
+	};
+	const handleMouseLeave = () => {
+		setVisible(false);
 	};
 
-	const documentMouseMove = useCallback((e: any) => {
-		const [x, y] = [e.clientX, e.clientY];
-
-		if (wrapperRef.current) {
-			const { top, left } = getOffset(wrapperRef.current);
-			if (y < top) {
-        setShow(false);
-				document.removeEventListener("mousemove", documentMouseMove);
-			}
-		}
-
-		if (bubbleRef.current) {
-			(bubbleRef.current as any).style.left = x + "px";
-			(bubbleRef.current as any).style.top = y - 24 + "px";
-		}
-	}, []);
-
-	const BubbleWrapper = () => (
-		<div ref={bubbleRef} className="bubble_wrapper">
-			{content}
-		</div>
-	);
-
 	return (
-		<>
+		<div
+			className="mouse_bubble_wrapper"
+			onMouseMove={handleMouseMove}
+			onMouseLeave={handleMouseLeave}
+			ref={wrapperRef}
+		>
+			{children}
 			<div
-				onMouseEnter={handleMouseEnter}
-				// onMouseLeave={handleMouseLeave}
-				className="mouse_bubble_wrapper"
-				ref={wrapperRef}
+				className="bubble_wrapper"
+				ref={bubbleRef}
+				style={{
+					left: `${position.left}px`,
+					top: `${position.top}px`,
+					visibility: `${visible ? "visible" : "hidden"}`,
+				}}
 			>
-				{children}
-				{show && BubbleWrapper()}
+				{typeof content === "string" ? (
+					<div className="bubble_content">{content}</div>
+				) : (
+					content
+				)}
 			</div>
-		</>
+		</div>
 	);
 });
 
-export default Index;
+export default index;

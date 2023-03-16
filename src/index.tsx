@@ -8,16 +8,22 @@ const root = ReactDOM.createRoot(
 );
 root.render(
 	<React.StrictMode>
-		<MouseBubble content={<div>123</div>}>
-			<div
-				style={{
-					marginTop: "200px",
-					width: "200px",
-					height: "200px",
-					background: "pink",
-				}}
-			>
+		<div
+			style={{
+				height: "300px",
+			}}
+		></div>
+		<MouseBubble content={<div>哈哈哈哈哈哈哈哈哈哈哈哈哈哈</div>}>
+			<div className="app_mouse_bubble">
 				hover me
+				<button>
+					啊吧啊爸爸爸爸爸爸爸爸爸爸爸爸爸爸爸爸爸爸爸爸爸爸爸爸爸爸爸爸吧
+				</button>
+			</div>
+		</MouseBubble>
+		<MouseBubble content={"哈哈哈哈哈哈哈哈哈哈哈哈哈哈"}>
+			<div className="app_mouse_bubble">
+				hover me2
 			</div>
 		</MouseBubble>
 	</React.StrictMode>,
