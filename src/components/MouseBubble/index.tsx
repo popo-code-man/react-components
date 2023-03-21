@@ -1,4 +1,4 @@
-import React, { memo, useState, useRef } from "react";
+import React, { memo, useState, useRef, MouseEvent } from "react";
 import "./index.scss";
 
 interface IMouseBubble {
@@ -13,12 +13,16 @@ const index = memo((props: IMouseBubble) => {
 		top: 0,
 		left: 0,
 	});
-	const wrapperRef = useRef<any>(null);
-	const bubbleRef = useRef<any>(null);
-	const getOffset = (e: any) => {
+	const wrapperRef = useRef<HTMLDivElement>(null);
+	const bubbleRef = useRef<HTMLDivElement>(null);
+	const getOffset = (e: MouseEvent) => {
 		const event = e || window.event;
-		const { x, y, width, height } = wrapperRef.current.getBoundingClientRect();
-		const bubbleObj = bubbleRef.current.getBoundingClientRect();
+		const { x, y, width, height } = (
+			wrapperRef.current as HTMLDivElement
+		).getBoundingClientRect();
+		const bubbleObj = (
+			bubbleRef.current as HTMLDivElement
+		).getBoundingClientRect();
 
 		let _x = event.clientX;
 		let _y = event.clientY;
@@ -41,7 +45,7 @@ const index = memo((props: IMouseBubble) => {
 		}
 		return { x: bubbleX, y: bubbleY };
 	};
-	const handleMouseMove = (e: any) => {
+	const handleMouseMove = (e: MouseEvent) => {
 		setVisible(true);
 
 		const { x, y } = getOffset(e);
