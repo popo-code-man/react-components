@@ -22,9 +22,7 @@ root.render(
 			</div>
 		</MouseBubble>
 		<MouseBubble content={"哈哈哈哈哈哈哈哈哈哈哈哈哈哈"}>
-			<div className="app_mouse_bubble">
-				hover me2
-			</div>
+			<div className="app_mouse_bubble">hover me2</div>
 		</MouseBubble>
 	</React.StrictMode>,
 );
